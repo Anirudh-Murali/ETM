@@ -5,41 +5,61 @@ import numpy as np
 import torch 
 import scipy.io
 
-def _fetch(path, name):
-    if name == 'train':
-        token_file = os.path.join(path, 'bow_tr_tokens.mat')
-        count_file = os.path.join(path, 'bow_tr_counts.mat')
-    elif name == 'valid':
-        token_file = os.path.join(path, 'bow_va_tokens.mat')
-        count_file = os.path.join(path, 'bow_va_counts.mat')
-    else:
-        token_file = os.path.join(path, 'bow_ts_tokens.mat')
-        count_file = os.path.join(path, 'bow_ts_counts.mat')
-    tokens = scipy.io.loadmat(token_file)['tokens'].squeeze()
-    counts = scipy.io.loadmat(count_file)['counts'].squeeze()
-    if name == 'test':
-        token_1_file = os.path.join(path, 'bow_ts_h1_tokens.mat')
-        count_1_file = os.path.join(path, 'bow_ts_h1_counts.mat')
-        token_2_file = os.path.join(path, 'bow_ts_h2_tokens.mat')
-        count_2_file = os.path.join(path, 'bow_ts_h2_counts.mat')
-        tokens_1 = scipy.io.loadmat(token_1_file)['tokens'].squeeze()
-        counts_1 = scipy.io.loadmat(count_1_file)['counts'].squeeze()
-        tokens_2 = scipy.io.loadmat(token_2_file)['tokens'].squeeze()
-        counts_2 = scipy.io.loadmat(count_2_file)['counts'].squeeze()
-        return {'tokens': tokens, 'counts': counts, 
-                    'tokens_1': tokens_1, 'counts_1': counts_1, 
-                        'tokens_2': tokens_2, 'counts_2': counts_2}
-    return {'tokens': tokens, 'counts': counts}
+# def _fetch(path, name):
+#     if name == 'train':
+#         token_file = os.path.join(path, 'bow_tr_tokens.mat')
+#         count_file = os.path.join(path, 'bow_tr_counts.mat')
+#     elif name == 'valid':
+#         token_file = os.path.join(path, 'bow_va_tokens.mat')
+#         count_file = os.path.join(path, 'bow_va_counts.mat')
+#     else:
+#         token_file = os.path.join(path, 'bow_ts_tokens.mat')
+#         count_file = os.path.join(path, 'bow_ts_counts.mat')
+#     tokens = scipy.io.loadmat(token_file)['tokens'].squeeze()
+#     counts = scipy.io.loadmat(count_file)['counts'].squeeze()
+#     if name == 'test':
+#         token_1_file = os.path.join(path, 'bow_ts_h1_tokens.mat')
+#         count_1_file = os.path.join(path, 'bow_ts_h1_counts.mat')
+#         token_2_file = os.path.join(path, 'bow_ts_h2_tokens.mat')
+#         count_2_file = os.path.join(path, 'bow_ts_h2_counts.mat')
+#         tokens_1 = scipy.io.loadmat(token_1_file)['tokens'].squeeze()
+#         counts_1 = scipy.io.loadmat(count_1_file)['counts'].squeeze()
+#         tokens_2 = scipy.io.loadmat(token_2_file)['tokens'].squeeze()
+#         counts_2 = scipy.io.loadmat(count_2_file)['counts'].squeeze()
+#         return {'tokens': tokens, 'counts': counts, 
+#                     'tokens_1': tokens_1, 'counts_1': counts_1, 
+#                         'tokens_2': tokens_2, 'counts_2': counts_2}
+#     return {'tokens': tokens, 'counts': counts}
 
+def _fetch(path, name):
+    with open(os.path.join(path, name), 'rb') as f:
+        file = pickle.load(f)
+    return file
+
+
+# def get_data(path):
+#     with open(os.path.join(path, 'vocab.pkl'), 'rb') as f:
+#         vocab = pickle.load(f)
+    
+#     vocab = [value for value in vocab.itervalues()]
+#     train = _fetch(path, 'train')
+#     valid = _fetch(path, 'valid')
+#     test = _fetch(path, 'test')
+
+#     return vocab, train, valid, test
 def get_data(path):
     with open(os.path.join(path, 'vocab.pkl'), 'rb') as f:
         vocab = pickle.load(f)
+    vocab = [i for i in vocab.itervalues()]
+    train = _fetch(path, 'train_dict.pkl')
+    valid = _fetch(path, 'valid_dict.pkl')
+    test = _fetch(path, 'test_dict.pkl')
+    test_1 = _fetch(path, 'test_1_dict.pkl')
+    test_2 = _fetch(path, 'test_2_dict.pkl')
 
-    train = _fetch(path, 'train')
-    valid = _fetch(path, 'valid')
-    test = _fetch(path, 'test')
+    return vocab, train, valid, test,test_1,test_2
 
-    return vocab, train, valid, test
+
 
 def get_batch(tokens, counts, ind, vocab_size, device, emsize=300):
     """fetch input data by batch."""

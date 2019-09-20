@@ -5,7 +5,7 @@ import math
 
 from torch import nn
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cpu")#("cuda" if torch.cuda.is_available() else "cpu")
 
 class ETM(nn.Module):
     def __init__(self, num_topics, vocab_size, t_hidden_size, rho_size, emsize, 

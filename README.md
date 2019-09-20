@@ -1,3 +1,11 @@
+# This is a forked version of the ETM code
+This repository was created to facilitate the data preprocessing steps and contain the results in a jupyter notebook.
+To create the required data files: -
+1. Run the Create Vocab and BOW, and change the data path and file names as per requirements. This will create the BOW tokens , counts and vocab files
+2. Open the Main.ipynb notebook and change parameters as required to reflect the new data files and path.
+
+Rest of the instructions are same.
+
 # ETM
 
 This is code that accompanies the paper titled "Topic Modeling in Embedding Spaces" by Adji B. Dieng, Francisco J. R. Ruiz, and David M. Blei. (Arxiv link: https://arxiv.org/abs/1907.04907)
